@@ -24,22 +24,35 @@
 
    This will create  a variable called cam (of type cam_h)
    that can be accessed by any routine in this file.  */
+#include<iostream>
+#include<unordered_map>
+using namespace std;
 
-
+typedef unordered_map<unsigned long long, int>  Routes;
+Routes routes;
 void cam_init()
 {
-   /* Write your code here */
+
 }
-
-
+//Get the hash for the ip
+unsigned long long getHash(ip_address_t *address)
+{
+	long long a=1000000000;
+	long long b=1000000;
+	long long c=1000;
+	return a*address->n1+b*address->n2+c*address->n3+address->n4;
+}
 void cam_add_entry(ip_address_t *address, int port)
 {
-   /* Write your code here */
+	unsigned long long hash=getHash(address);
+	routes.insert(make_pair(hash,port));
 }
 
 int cam_lookup_address(ip_address_t *address)
 {
-   /* Write your code here */
+
+	unsigned long long hash=getHash(address);
+	return routes.find(hash)->second;
 }
 
 void cam_free()

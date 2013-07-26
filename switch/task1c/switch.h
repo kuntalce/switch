@@ -3,7 +3,7 @@
  *
  *  Switch Routines
  *
- *  Created by _________, University of British Columbia
+ *  Created by G10, University of British Columbia
  *
  *  This file contains the prototypes for the switch 
  *  routines that you will create.  In addition,

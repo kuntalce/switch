@@ -2,7 +2,7 @@
  *
  *  Switch Routines
  *
- *  Created by _________, University of British Columbia
+ *  Created by G10, University of British Columbia
  *
  *  This is where you will put your routines to implement
  *  the switch routines.  You should use the headers as
@@ -28,8 +28,7 @@ void switch_init()
 void switch_add_entry(ip_address_t *address,
                       int port)
 {
-   /* Add your code here.  It might be as simple as adding
-      a call to cam_add_entry() */
+   cam_add_entry(address,port);
 }
 
 void switch_free()

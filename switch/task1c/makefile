@@ -1,7 +1,9 @@
 
-CC = gcc
+CC = g++
 
 LIB = -lpthread -lrt
+
+EXP = -std=c++0x
 
 #LIB_PATH = -L/usr/openwin/lib
 #LIB_PATH = -L/usr/X11R6/lib
@@ -23,7 +25,7 @@ main.o: main.c $(H)
 	$(CC) -c $(FLAGS) main.c 
 
 cam.o: cam.c $(H)
-	$(CC) -c $(FLAGS) cam.c 
+	$(CC) -c $(FLAGS) cam.c $(EXP)
 
 misc.o: misc.c $(H)
 	$(CC) -c $(FLAGS) misc.c 

@@ -10,7 +10,7 @@
  ******************************************************/
 
 #include "defs.h"
-
+#include<unistd.h>
 /* Shared variables among all threads */
 
 port_t in_port[4];

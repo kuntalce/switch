@@ -24,6 +24,7 @@
 #include <string.h>
 #include <time.h>
 #include <pthread.h>
+#include <iostream>
 
 /*----------------------------------------------------
  * The maximum length of a line in the input file

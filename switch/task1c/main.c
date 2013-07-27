@@ -16,7 +16,7 @@
 port_t in_port[4];
 port_t out_port[4];
 BOOL die;
-
+Buffer bufferSpace;
 main()
 {
    int i,status;

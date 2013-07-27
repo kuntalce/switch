@@ -150,7 +150,7 @@ static void send_message(int input_port)
  *  otherwise                                                              *
  *                                                                         *
  *-------------------------------------------------------------------------*/
-
+ 
 static BOOL receive_message_if_there_is_one(int output_port)
 {
    packet_t packet;   /* Used to store received packet */
@@ -419,3 +419,4 @@ void harness_end()
    printf("Percent packets dropped: %f\%\n", 100*
                (float)(num_packets_sent-num_packets_received)/(num_packets_sent));
 }
+

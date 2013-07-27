@@ -73,6 +73,7 @@ typedef struct port_t {
 } port_t;
 
 
+
 /*---------------------------------------------------------*
  *                                                         *
  * This routine is used to copy one variable of type       *
@@ -187,7 +188,13 @@ void port_lock(port_t *port_ptr);
 
 void port_unlock(port_t *port_ptr);
 
+typedef struct Buffer {
+  pthread_mutex_t mutex;  
+  packet_t packets[BUFFERLENGTH];   
+	int readIndex;   
+	int writeIndex;   
 
+} Buffer;
 
 
                      

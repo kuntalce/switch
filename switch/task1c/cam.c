@@ -52,6 +52,12 @@ int cam_lookup_address(ip_address_t *address)
 {
 
 	unsigned long long hash=getHash(address);
+	Routes::const_iterator iter=routes.find(hash);
+	//if not found
+	if(iter == routes.end())
+	{
+		return -1;
+	}
 	return routes.find(hash)->second;
 }
 

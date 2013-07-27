@@ -47,12 +47,17 @@ static void forward_message(int input_port)
 	if(in_port[input_port].flag)
 	{
 		packet_t packet; 
+
 		 /* Copy the packet from the port */
 		packet_copy(&inputPort.packet,&packet);
 		
-		in_port[input_port].flag = (BOOL)0;
+		in_port[input_port].flag = FALSE;
 		/*Writes the packet into the buffer and increment the writeIndex value*/
+
+		buffer_lock();		
 		bufferSpace.packets[ bufferSpace.writeIndex++%BUFFERLENGTH] =packet;
+		buffer_unlock();
+
 	}
 	port_unlock(&inputPort);
 }
@@ -73,11 +78,16 @@ void *processOutputs(void *arg)
 {
 	while(!die) 
 	{
+		buffer_lock();
+
 		/*Read the buffer if the write index is greater*/
 		if(bufferSpace.writeIndex>bufferSpace.readIndex)
 		{
 				/*Reads the packet from the buffer and increment the rightIndex value*/
 				packet_t packet=bufferSpace.packets[bufferSpace.readIndex++%BUFFERLENGTH]; 
+
+				buffer_unlock();
+
 				int outPort=cam_lookup_address(&packet.address);
 				//port_t outputPort=out_port[outPort];
 				port_lock(&(out_port[outPort]));
@@ -88,7 +98,10 @@ void *processOutputs(void *arg)
 
 				port_unlock(&(out_port[outPort]));
 		}
-
+		else
+		{
+			buffer_unlock();
+		}
 		short_sleep();
 	}
 
@@ -98,14 +111,14 @@ void *processOutputs(void *arg)
 void *switch_thread_routine(void *arg)
 {
 
-bufferSpace.readIndex=0;
-bufferSpace.writeIndex=0;	
-int i=0;
-pthread_t switch_child_id;
-int status = pthread_create(&switch_child_id,
-                           NULL,
-                           processOutputs,
-                           NULL);
+	bufferSpace.readIndex=0;
+	bufferSpace.writeIndex=0;	
+	int i=0;
+	pthread_t switch_child_id;
+	int status = pthread_create(&switch_child_id,
+		                   NULL,
+		                   processOutputs,
+		                   NULL);
 
 	if (status != 0) {
 	printf("Error creating switch child thread\n");
@@ -117,7 +130,7 @@ int status = pthread_create(&switch_child_id,
 	exit(0);
 	}
 	
-	/* Rutine runs untill all the procedure finishes*/
+	/* Runs untill all the procedure finishes*/
 	while(!die) 
 		{
 

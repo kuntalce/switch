@@ -13,11 +13,11 @@
 
 #include "defs.h"
 
-
+/* Locks the buffer */
 void buffer_lock()
 {
   int status;
-
+   /*To check the mutex value*/
    status = pthread_mutex_lock(&bufferSpace.mutex);   
    if (status != 0) {
       printf("Error locking mutex in buffer data structure\n");
@@ -25,11 +25,11 @@ void buffer_lock()
    }
 }
 
-
+/* Unlocks the buffer */
 void buffer_unlock()
 {
    int status;
-
+   /* To check the mutex value */
    status = pthread_mutex_unlock(&bufferSpace.mutex);   
    if (status != 0) {
       printf("Error unlocking mutex in buffer data structure\n");
@@ -37,6 +37,7 @@ void buffer_unlock()
    }
 }
 
+/* The function to forward the message */
 static void forward_message(int input_port)
 {
 	port_t inputPort=in_port[input_port];
@@ -48,14 +49,15 @@ static void forward_message(int input_port)
 		packet_t packet; 
 		 /* Copy the packet from the port */
 		packet_copy(&inputPort.packet,&packet);
-
+		
 		in_port[input_port].flag = (BOOL)0;
-
-
+		/*Writes the packet into the buffer and increment the writeIndex value*/
 		bufferSpace.packets[ bufferSpace.writeIndex++%BUFFERLENGTH] =packet;
 	}
 	port_unlock(&inputPort);
 }
+
+/*The function to sleep the thread*/
 static void short_sleep()
 {
    struct timespec delay_time, what_time_is_it;
@@ -65,21 +67,22 @@ static void short_sleep()
 
    nanosleep(&delay_time, &what_time_is_it);
 }
+
+/* The function to read the buffer*/
 void *processOutputs(void *arg)
 {
 	while(!die) 
 	{
+		/*Read the buffer if the write index is greater*/
 		if(bufferSpace.writeIndex>bufferSpace.readIndex)
 		{
-
-				packet_t packet=bufferSpace.packets		[bufferSpace.readIndex++%BUFFERLENGTH]; 
+				/*Reads the packet from the buffer and increment the rightIndex value*/
+				packet_t packet=bufferSpace.packets[bufferSpace.readIndex++%BUFFERLENGTH]; 
 				int outPort=cam_lookup_address(&packet.address);
-
 				//port_t outputPort=out_port[outPort];
 				port_lock(&(out_port[outPort]));
 				 /* Copy the packet to the port */
-				packet_copy(&packet,
-			       &(out_port[outPort].packet));
+				packet_copy(&packet,&(out_port[outPort].packet));
 
 				out_port[outPort].flag= TRUE;
 
@@ -91,6 +94,7 @@ void *processOutputs(void *arg)
 
 }
 
+/*Thread routine to handle the switch*/
 void *switch_thread_routine(void *arg)
 {
 
@@ -103,26 +107,26 @@ int status = pthread_create(&switch_child_id,
                            processOutputs,
                            NULL);
 
-   if (status != 0) {
-      printf("Error creating switch child thread\n");
-      exit(0);
-   }
+	if (status != 0) {
+	printf("Error creating switch child thread\n");
+	exit(0);
+	}
 	status = pthread_detach(switch_child_id);
-   if (status != 0) {
-      printf("Error detaching switch child thread\n");
-      exit(0);
-   }
+	if (status != 0) {
+	printf("Error detaching switch child thread\n");
+	exit(0);
+	}
+	
+	/* Rutine runs untill all the procedure finishes*/
+	while(!die) 
+		{
 
-
-while(!die) 
-{
-
-	for(i=0;i<4;i++) 
-	{
- 		forward_message(i);	
- 	}
-      short_sleep();
-}
+			for(i=0;i<4;i++) 
+			{
+		 		forward_message(i);	
+		 	}
+		      short_sleep();
+		}
 
 }
 

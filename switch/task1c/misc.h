@@ -188,6 +188,13 @@ void port_lock(port_t *port_ptr);
 
 void port_unlock(port_t *port_ptr);
 
+/*-----------------------------------------------------------*
+ *    This structure stores BUFFERLENTH packets              *
+ *    It stores the mutex and the packet detail              *
+ *    It also keeps track of write and read index of         *
+ *    the packet 					     *
+ *-----------------------------------------------------------*/
+
 typedef struct Buffer {
   pthread_mutex_t mutex;  
   packet_t packets[BUFFERLENGTH];   
